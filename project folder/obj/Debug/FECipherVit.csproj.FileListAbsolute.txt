@@ -1,0 +1,15 @@
+E:\Programming\fecipher\fecipher\FECipherVit\bin\Debug\FECipherVit.exe
+E:\Programming\fecipher\fecipher\FECipherVit\bin\Debug\FECipherVit.pdb
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.csprojResolveAssemblyReference.cache
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.FECipherVit.resources
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.Properties.Resources.resources
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.csproj.GenerateResource.Cache
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.exe
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.pdb
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.DeckSelect.resources
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.CardSetView.resources
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.GetInteger.resources
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.Connection.resources
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.SetConfig.resources
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.SelectHero.resources
+E:\Programming\fecipher\fecipher\FECipherVit\obj\Debug\FECipherVit.About.resources
