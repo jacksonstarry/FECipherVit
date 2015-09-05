@@ -34,47 +34,43 @@ namespace NetAccess
         {
             //如果消息超过1024个字节, 收到的消息会分为(总字节长度/1024 +1)条显示
             Byte[] msg = new byte[1024];
-            
-                //异步的接受消息
-                communicateSocket.BeginReceive(msg, 0, msg.Length, SocketFlags.None,
-                    ar =>
-                    {
+
+            //异步的接受消息
+            communicateSocket.BeginReceive(msg, 0, msg.Length, SocketFlags.None,
+                ar =>
+                {
                         //对方断开连接时, 这里抛出Socket Exception
                         //An existing connection was forcibly closed by the remote host 
                         try
+                    {
+                        communicateSocket.EndReceive(ar);
+                    }
+                    catch
+                    {
+                        if (communicateSocket != null && communicateSocket.IsBound)
                         {
-                            communicateSocket.EndReceive(ar);
+                            communicateSocket.Disconnect(true);
+                            communicateSocket.Dispose();
+                            communicateSocket = null;
                         }
-                        catch
+
+                        return;
+                    }
+                    try
+                    {
+                        if (Encoding.UTF8.GetString(msg) != "")
                         {
-                            if (communicateSocket != null && communicateSocket.IsBound)
+                            string temp = Encoding.UTF8.GetString(msg);
+                            if (temp.Contains("☂") && !temp.Contains("☂☻"))
                             {
-                                communicateSocket.Disconnect(true);
-                                communicateSocket.Dispose();
-                                communicateSocket = null;
+                                temp = temp.Remove(temp.LastIndexOf("☂") + 1);
                             }
-                            return;
+                            ReceiveAction(temp.Trim('\0', ' '));
+                            Receive(ReceiveAction);
                         }
-                        try
-                        {
-                            if (Encoding.UTF8.GetString(msg) != "")
-                            {
-                                string temp = Encoding.UTF8.GetString(msg);
-                                ReceiveAction(temp.Trim('\0', ' '));
-                                Receive(ReceiveAction);
-                            }
-                        }
-                        catch
-                        {   
-                            File.WriteAllBytes(@"ErrLog\ErrMsgByte.txt", msg);
-                            try
-                            {
-                                File.WriteAllText(@"ErrLog\ErrMsg.txt", Encoding.UTF8.GetString(msg));
-                            }
-                            catch { }
-                            communicateSocket.EndReceive(ar);
-                        }
-                    }, null);   
+                    }
+                    catch { }
+                }, null);
         }
     }
 

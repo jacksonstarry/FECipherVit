@@ -77,6 +77,7 @@
             this.导出场面信息ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.导入场面信息ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.抛出异常调试用ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.编辑卡组ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonTurnStart = new System.Windows.Forms.Button();
@@ -89,6 +90,10 @@
             this.label_RivalHandTotal = new System.Windows.Forms.Label();
             this.button_CriticalAttack = new System.Windows.Forms.Button();
             this.button_Miss = new System.Windows.Forms.Button();
+            this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.用户手册ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.下载更新ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bug报告ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip_HandRegion.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCardInfo)).BeginInit();
@@ -206,6 +211,7 @@
             this.动作ToolStripMenuItem,
             this.其他ToolStripMenuItem1,
             this.设置ToolStripMenuItem,
+            this.帮助ToolStripMenuItem,
             this.关于ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(613, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -464,7 +470,8 @@
             this.其他ToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.请求猜拳ToolStripMenuItem,
             this.恢复场面信息ToolStripMenuItem,
-            this.抛出异常调试用ToolStripMenuItem});
+            this.抛出异常调试用ToolStripMenuItem,
+            this.编辑卡组ToolStripMenuItem});
             this.其他ToolStripMenuItem1.Name = "其他ToolStripMenuItem1";
             this.其他ToolStripMenuItem1.Size = new System.Drawing.Size(44, 28);
             this.其他ToolStripMenuItem1.Text = "其他";
@@ -508,6 +515,13 @@
             this.抛出异常调试用ToolStripMenuItem.Text = "抛出异常（调试用）";
             this.抛出异常调试用ToolStripMenuItem.Visible = false;
             this.抛出异常调试用ToolStripMenuItem.Click += new System.EventHandler(this.抛出异常调试用ToolStripMenuItem_Click);
+            // 
+            // 编辑卡组ToolStripMenuItem
+            // 
+            this.编辑卡组ToolStripMenuItem.Name = "编辑卡组ToolStripMenuItem";
+            this.编辑卡组ToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.编辑卡组ToolStripMenuItem.Text = "编辑卡组";
+            this.编辑卡组ToolStripMenuItem.Click += new System.EventHandler(this.编辑卡组ToolStripMenuItem_Click);
             // 
             // 设置ToolStripMenuItem
             // 
@@ -567,7 +581,7 @@
             // 
             // pictureBoxField
             // 
-            this.pictureBoxField.Image = global::FECipherVit.Properties.Resources.FEcipher_playseat_all_612_720;
+            this.pictureBoxField.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxField.Image")));
             this.pictureBoxField.Location = new System.Drawing.Point(0, 0);
             this.pictureBoxField.Name = "pictureBoxField";
             this.pictureBoxField.Size = new System.Drawing.Size(612, 720);
@@ -622,6 +636,37 @@
             this.button_Miss.UseVisualStyleBackColor = true;
             this.button_Miss.Visible = false;
             this.button_Miss.Click += new System.EventHandler(this.button_Miss_Click);
+            // 
+            // 帮助ToolStripMenuItem
+            // 
+            this.帮助ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.用户手册ToolStripMenuItem,
+            this.下载更新ToolStripMenuItem,
+            this.bug报告ToolStripMenuItem});
+            this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
+            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(44, 28);
+            this.帮助ToolStripMenuItem.Text = "帮助";
+            // 
+            // 用户手册ToolStripMenuItem
+            // 
+            this.用户手册ToolStripMenuItem.Name = "用户手册ToolStripMenuItem";
+            this.用户手册ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.用户手册ToolStripMenuItem.Text = "用户手册";
+            this.用户手册ToolStripMenuItem.Click += new System.EventHandler(this.用户手册ToolStripMenuItem_Click);
+            // 
+            // 下载更新ToolStripMenuItem
+            // 
+            this.下载更新ToolStripMenuItem.Name = "下载更新ToolStripMenuItem";
+            this.下载更新ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.下载更新ToolStripMenuItem.Text = "下载更新";
+            this.下载更新ToolStripMenuItem.Click += new System.EventHandler(this.下载更新ToolStripMenuItem_Click);
+            // 
+            // bug报告ToolStripMenuItem
+            // 
+            this.bug报告ToolStripMenuItem.Name = "bug报告ToolStripMenuItem";
+            this.bug报告ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.bug报告ToolStripMenuItem.Text = "Bug报告";
+            this.bug报告ToolStripMenuItem.Click += new System.EventHandler(this.bug报告ToolStripMenuItem_Click);
             // 
             // FECipherVit
             // 
@@ -725,6 +770,11 @@
         private System.Windows.Forms.ToolStripMenuItem 导出场面信息ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 导入场面信息ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 抛出异常调试用ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 编辑卡组ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 用户手册ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 下载更新ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bug报告ToolStripMenuItem;
     }
 }
 

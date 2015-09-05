@@ -20,7 +20,8 @@ namespace FECipherVit
 
         private void button_Confirm_Click(object sender, EventArgs e)
         {
-            AppConfig.SetValue("RememberHero", checkBox_RememberHero.Checked.ToString());
+            AppConfig.SetValue("UseFirsrCardAsHero", checkBox_UseFirsrCardAsHero.Checked.ToString());
+            AppConfig.SetValue("SendSkillDetail", checkBox_SendSkillDetail.Checked.ToString());
             this.Close();
         }
 
@@ -31,9 +32,13 @@ namespace FECipherVit
 
         void LoadSettings()
         {
-            if (AppConfig.GetValue("RememberHero") == "True")
+            if (AppConfig.GetValue("UseFirsrCardAsHero") == "True")
             {
-                checkBox_RememberHero.Checked = true;
+                checkBox_UseFirsrCardAsHero.Checked = true;
+            }
+            if (AppConfig.GetValue("SendSkillDetail") == "True")
+            {
+                checkBox_SendSkillDetail.Checked = true;
             }
         }
         private void button_Cancel_Click(object sender, EventArgs e)
@@ -43,7 +48,8 @@ namespace FECipherVit
 
         private void button_Reset_Click(object sender, EventArgs e)
         {
-            AppConfig.SetValue("RememberHero", "False");
+            AppConfig.SetValue("UseFirsrCardAsHero", "False");
+            AppConfig.SetValue("SendSkillDetail", "True");
             LoadSettings();
         }
     }

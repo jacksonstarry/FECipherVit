@@ -48,7 +48,7 @@ namespace FECipherVit
             {
                 try
                 {
-                    Owner.socket.Send("☻" + code + "☻");
+                    Owner.socket.Send("☻" + code + "☂");
                 }
                 catch (Exception ecp)
                 {
@@ -70,14 +70,14 @@ namespace FECipherVit
                 case "MyName":
                     if (Owner.connection.connected)
                     {
-                        Owner.socket.Send("☻MyName#null#" + text + "☻");
+                        Owner.socket.Send("☻MyName#null#" + text + "☂");
                     }
                     break;
                 case "PointOut":
                     text = Environment.NewLine + Environment.NewLine + Owner.PlayerName + " " + System.DateTime.Now.ToString("HH:mm:ss") + Environment.NewLine + text;
                     if (Owner.connection.connected)
                     {
-                        Owner.socket.Send("☻PointOut#" + contents[0] + ";" + contents[1] + "#" + text + "☻");
+                        Owner.socket.Send("☻PointOut#" + contents[0] + ";" + contents[1] + "#" + text + "☂");
                     }
                     Owner.UpdateGetMsgTextBox(text);
                     break;
@@ -85,9 +85,9 @@ namespace FECipherVit
         }
         public void Receive(string code)
         {
-            if (code.Contains("☻☻"))
+            if (code.Contains("☂☻"))
             {
-                int posEmoji = code.IndexOf("☻☻");
+                int posEmoji = code.IndexOf("☂☻");
                 string code1 = code.Substring(0, posEmoji + 1);
                 string code2 = code.Substring(posEmoji + 1);
                 Receive(code1);
@@ -95,7 +95,7 @@ namespace FECipherVit
                 return;
             }
 
-            code = code.Replace("☻", "");
+            code = code.Trim('☂', '☻'); 
 
             if (Owner.PointedOutCardPic != null)
             {

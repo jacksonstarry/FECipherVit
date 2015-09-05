@@ -32,7 +32,8 @@
             this.button_Confirm = new System.Windows.Forms.Button();
             this.button_Cancel = new System.Windows.Forms.Button();
             this.button_Reset = new System.Windows.Forms.Button();
-            this.checkBox_RememberHero = new System.Windows.Forms.CheckBox();
+            this.checkBox_UseFirsrCardAsHero = new System.Windows.Forms.CheckBox();
+            this.checkBox_SendSkillDetail = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // button_Confirm
@@ -65,22 +66,33 @@
             this.button_Reset.UseVisualStyleBackColor = true;
             this.button_Reset.Click += new System.EventHandler(this.button_Reset_Click);
             // 
-            // checkBox_RememberHero
+            // checkBox_UseFirsrCardAsHero
             // 
-            this.checkBox_RememberHero.AutoSize = true;
-            this.checkBox_RememberHero.Location = new System.Drawing.Point(15, 12);
-            this.checkBox_RememberHero.Name = "checkBox_RememberHero";
-            this.checkBox_RememberHero.Size = new System.Drawing.Size(123, 21);
-            this.checkBox_RememberHero.TabIndex = 5;
-            this.checkBox_RememberHero.Text = "记住卡组的主人公";
-            this.checkBox_RememberHero.UseVisualStyleBackColor = true;
+            this.checkBox_UseFirsrCardAsHero.AutoSize = true;
+            this.checkBox_UseFirsrCardAsHero.Location = new System.Drawing.Point(15, 12);
+            this.checkBox_UseFirsrCardAsHero.Name = "checkBox_UseFirsrCardAsHero";
+            this.checkBox_UseFirsrCardAsHero.Size = new System.Drawing.Size(183, 21);
+            this.checkBox_UseFirsrCardAsHero.TabIndex = 5;
+            this.checkBox_UseFirsrCardAsHero.Text = "使用卡组第一张卡作为主人公";
+            this.checkBox_UseFirsrCardAsHero.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_SendSkillDetail
+            // 
+            this.checkBox_SendSkillDetail.AutoSize = true;
+            this.checkBox_SendSkillDetail.Location = new System.Drawing.Point(15, 39);
+            this.checkBox_SendSkillDetail.Name = "checkBox_SendSkillDetail";
+            this.checkBox_SendSkillDetail.Size = new System.Drawing.Size(159, 21);
+            this.checkBox_SendSkillDetail.TabIndex = 6;
+            this.checkBox_SendSkillDetail.Text = "发动能力时发送能力内容";
+            this.checkBox_SendSkillDetail.UseVisualStyleBackColor = true;
             // 
             // SetConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(307, 255);
-            this.Controls.Add(this.checkBox_RememberHero);
+            this.Controls.Add(this.checkBox_SendSkillDetail);
+            this.Controls.Add(this.checkBox_UseFirsrCardAsHero);
             this.Controls.Add(this.button_Reset);
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_Confirm);
@@ -100,6 +112,7 @@
         private System.Windows.Forms.Button button_Confirm;
         private System.Windows.Forms.Button button_Cancel;
         private System.Windows.Forms.Button button_Reset;
-        private System.Windows.Forms.CheckBox checkBox_RememberHero;
+        private System.Windows.Forms.CheckBox checkBox_UseFirsrCardAsHero;
+        private System.Windows.Forms.CheckBox checkBox_SendSkillDetail;
     }
 }

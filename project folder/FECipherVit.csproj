@@ -71,6 +71,12 @@
     <Compile Include="Connection.Designer.cs">
       <DependentUpon>Connection.cs</DependentUpon>
     </Compile>
+    <Compile Include="DeckConstruction.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DeckConstruction.Designer.cs">
+      <DependentUpon>DeckConstruction.cs</DependentUpon>
+    </Compile>
     <Compile Include="DeckSelect.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +89,12 @@
     <Compile Include="FECipherVit.Designer.cs">
       <DependentUpon>FECipherVit.cs</DependentUpon>
     </Compile>
+    <Compile Include="UseSkill.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UseSkill.Designer.cs">
+      <DependentUpon>UseSkill.cs</DependentUpon>
+    </Compile>
     <Compile Include="GetInteger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,6 +104,11 @@
     <Compile Include="MsgProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SelectHero.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,25 +131,26 @@
     <EmbeddedResource Include="Connection.resx">
       <DependentUpon>Connection.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DeckConstruction.resx">
+      <DependentUpon>DeckConstruction.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DeckSelect.resx">
       <DependentUpon>DeckSelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FECipherVit.resx">
       <DependentUpon>FECipherVit.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UseSkill.resx">
+      <DependentUpon>UseSkill.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GetInteger.resx">
       <DependentUpon>GetInteger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="SelectHero.resx">
       <DependentUpon>SelectHero.cs</DependentUpon>
     </EmbeddedResource>
@@ -153,7 +171,6 @@
     <None Include="FEcipher_playseat_all_612,720.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="frame.png" />
     <Content Include="header_logo.png" />
     <Content Include="icon.ico" />
   </ItemGroup>

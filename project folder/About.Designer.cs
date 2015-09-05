@@ -34,6 +34,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -44,7 +45,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(95, 17);
             this.label4.TabIndex = 31;
-            this.label4.Text = "FECipherVit 0.4";
+            this.label4.Text = "FECipherVit 1.0";
             // 
             // label3
             // 
@@ -83,11 +84,21 @@
             this.label2.TabIndex = 33;
             this.label2.Text = "鸣谢：暗黑天马夏澈丹、随风堕落";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(69, 258);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(226, 17);
+            this.label5.TabIndex = 34;
+            this.label5.Text = "© Nintendo / INTELLIGENT SYSTEMS";
+            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 256);
+            this.ClientSize = new System.Drawing.Size(364, 288);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label4);
@@ -114,5 +125,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label5;
     }
 }

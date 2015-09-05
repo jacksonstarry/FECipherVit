@@ -65,17 +65,7 @@ namespace FECipherVit.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap FEcipher_playseat_all_612_720 {
             get {
-                object obj = ResourceManager.GetObject("FEcipher_playseat_all_612,720", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
-        internal static System.Drawing.Bitmap frame {
-            get {
-                object obj = ResourceManager.GetObject("frame", resourceCulture);
+                object obj = ResourceManager.GetObject("FEcipher_playseat_all_612_720", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

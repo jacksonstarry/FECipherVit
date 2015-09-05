@@ -144,7 +144,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(95, 17);
             this.label4.TabIndex = 28;
-            this.label4.Text = "FECipherVit 0.4";
+            this.label4.Text = "FECipherVit 1.0";
             // 
             // label5
             // 

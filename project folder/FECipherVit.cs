@@ -25,7 +25,6 @@ namespace FECipherVit
         string DeckFilename = "";
         public string PlayerName = "";
         public string RivalName = "";
-        int DeckHeroNum = -1;
         //public string Allinfo = "";
         public bool GameOn = false;
         List<CardPic> HandCardPics = new List<CardPic>();
@@ -215,12 +214,12 @@ namespace FECipherVit
             横置竖置ToolStripMenuItem = new ToolStripMenuItem();
             this.横置竖置ToolStripMenuItem.Name = "横置竖置ToolStripMenuItem";
             this.横置竖置ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.横置竖置ToolStripMenuItem.Text = "横置竖置";
+            this.横置竖置ToolStripMenuItem.Text = "横置/竖置";
             this.横置竖置ToolStripMenuItem.Click += new System.EventHandler(this.横置竖置ToolStripMenuItem_Click);
             升级转职ToolStripMenuItem = new ToolStripMenuItem();
             this.升级转职ToolStripMenuItem.Name = "升级转职ToolStripMenuItem";
             this.升级转职ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.升级转职ToolStripMenuItem.Text = "升级转职";
+            this.升级转职ToolStripMenuItem.Text = "升级/转职";
             this.升级转职ToolStripMenuItem.Click += new System.EventHandler(this.升级转职ToolStripMenuItem_Click);
             发动能力ToolStripMenuItem = new ToolStripMenuItem();
             this.发动能力ToolStripMenuItem.Name = "发动能力ToolStripMenuItem";
@@ -915,6 +914,7 @@ namespace FECipherVit
                     {
                         MessageBox.Show(exp.Message, "错误");
                         System.Windows.Forms.Application.Restart();
+                        return;
                     }
                     //MessageBox.Show("连接成功", "连接");
                     connection.connected = true;
@@ -988,6 +988,11 @@ namespace FECipherVit
             }
             textBoxCardInfo.Text = str;
         }
+        private void FECipherVit_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            File.Delete("decktemp");
+            File.Delete("fieldstatustemp");
+        }
         #endregion
         #region Buttons
         public void Card_MouseClick(object sender, MouseEventArgs e)
@@ -1060,9 +1065,9 @@ namespace FECipherVit
             Reset();
             int HeroNum;
             int HeroSerialNo;
-            if (AppConfig.GetValue("RememberHero") == "True" && DeckHeroNum >= 0)
+            if (AppConfig.GetValue("UseFirsrCardAsHero") == "True")
             {
-                HeroNum = DeckHeroNum;
+                HeroNum = 0;
             }
             else
             {
@@ -1078,13 +1083,6 @@ namespace FECipherVit
                     return;
                 }
                 SelectHeroFromDeck.Dispose();
-                if (AppConfig.GetValue("RememberHero") == "True")
-                {
-                    if (HeroNum >= 0)
-                    {
-                        DeckHeroNum = HeroNum;
-                    }
-                }
             }
             buttonGameOn.Visible = false;
             buttonTurnStart.Visible = true;
@@ -1470,13 +1468,12 @@ namespace FECipherVit
             thisCard.IsHorizontal = true;
             if (PointedOutCardPic == null)
             {
-                msgProcessor.Send("Attack", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]进行攻击。");
+                msgProcessor.Send("Attack", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]进行攻击（攻击力" + thisCard.Power.ToString() + "）。");
             }
             else
             {
                 Card PointedOutCard = ((CardPic)PointedOutCardPic).thisCard;
-                msgProcessor.Send("Attack", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]以[" + GetRegionNameInString(PointedOutCard.BelongedRegion()) + "][" + PointedOutCard.UnitTitle + " " + PointedOutCard.UnitName + "]为对象进行攻击。");
-
+                msgProcessor.Send("Attack", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]（攻击力"+thisCard.Power.ToString() + "）以[" + GetRegionNameInString(PointedOutCard.BelongedRegion()) + "][" + PointedOutCard.UnitTitle + " " + PointedOutCard.UnitName + "]（攻击力" + PointedOutCard.Power.ToString() + "）为对象进行攻击。");
             }
             Renew();
         }
@@ -1530,12 +1527,54 @@ namespace FECipherVit
             Card thisCard = ((CardPic)CardPicClicked).thisCard;
             if (PointedOutCardPic == null)
             {
-                msgProcessor.Send("Skill", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]发动能力。");
+                if (AppConfig.GetValue("SendSkillDetail") == "True")
+                {
+                    if (!CardData[thisCard.SerialNo][16].Contains("$$"))
+                    {
+                        msgProcessor.Send("Skill", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]发动能力：" + CardData[thisCard.SerialNo][16]);
+                    }
+                    else
+                    {
+                        using (UseSkill useskill = new UseSkill(CardData[thisCard.SerialNo]))
+                        {
+                            if (useskill.ShowDialog() == DialogResult.OK)
+                            {
+                                msgProcessor.Send("Skill", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]发动能力：" + useskill.SelectedSkillContent);
+                                return;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    msgProcessor.Send("Skill", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]发动能力。");
+                }
             }
             else
             {
                 Card PointedOutCard = ((CardPic)PointedOutCardPic).thisCard;
-                msgProcessor.Send("Skill", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]以[" + GetRegionNameInString(PointedOutCard.BelongedRegion()) + "][" + PointedOutCard.UnitTitle + " " + PointedOutCard.UnitName + "]为对象发动能力。");
+                if (AppConfig.GetValue("SendSkillDetail") == "True")
+                {
+                    if (!CardData[thisCard.SerialNo][16].Contains("$$"))
+                    {
+                        msgProcessor.Send("Skill", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]以[" + GetRegionNameInString(PointedOutCard.BelongedRegion()) + "][" + PointedOutCard.UnitTitle + " " + PointedOutCard.UnitName + "]为对象发动能力：" + CardData[thisCard.SerialNo][16]);
+                    }
+                    else
+                    {
+                        using (UseSkill useskill = new UseSkill(CardData[thisCard.SerialNo]))
+                        {
+                            if (useskill.ShowDialog() == DialogResult.OK)
+                            {
+                                msgProcessor.Send("Skill", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]以[" + GetRegionNameInString(PointedOutCard.BelongedRegion()) + "][" + PointedOutCard.UnitTitle + " " + PointedOutCard.UnitName + "]为对象发动能力：" + useskill.SelectedSkillContent);
+                                return;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    msgProcessor.Send("Skill", "#[" + GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]以[" + GetRegionNameInString(PointedOutCard.BelongedRegion()) + "][" + PointedOutCard.UnitTitle + " " + PointedOutCard.UnitName + "]为对象发动能力。");
+                }
             }
             Renew();
         }
@@ -2057,6 +2096,96 @@ namespace FECipherVit
             }
             msgProcessor.Send("DecideGoFirst", text);
         }
+        private void 导出场面信息ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog exportFieldStatus = new SaveFileDialog();
+            exportFieldStatus.Filter = "FECipher场面信息(*.fe0fs)|*.fe0fs";
+            exportFieldStatus.FilterIndex = 1;
+            exportFieldStatus.RestoreDirectory = true;
+            if (exportFieldStatus.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(exportFieldStatus.FileName, DatabaseVer.ToString() + "#" + Player.toString(), Encoding.UTF8);
+            }
+        }
+        private void 导入场面信息ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog importFieldStatus = new OpenFileDialog();
+            importFieldStatus.Filter = "FECipher场面信息(*.fe0fs)|*.fe0fs";
+            importFieldStatus.FilterIndex = 1;
+            importFieldStatus.RestoreDirectory = true;
+            if (importFieldStatus.ShowDialog() == DialogResult.OK)
+            {
+                string[] FieldStatus = File.ReadAllText(importFieldStatus.FileName, Encoding.UTF8).Split(new string[] { "#" }, StringSplitOptions.None);
+                int ImportDataBaseVer = Convert.ToInt32(FieldStatus[0]);
+                if (ImportDataBaseVer > DatabaseVer)
+                {
+                    MessageBox.Show("要导入的数据版本高于当前程序的数据版本，请下载新版程序。");
+                }
+                else
+                {
+                    Player = new User(FieldStatus[1]);
+                    Renew();
+                    buttonGameOn.Visible = false;
+                    buttonTurnStart.Visible = true;
+                    buttonTurnEnd.Visible = true;
+                    buttonUseKizuna.Visible = true;
+                    buttonSupport.Visible = true;
+                    button_CriticalAttack.Visible = true;
+                    button_Miss.Visible = true;
+                    label_RivalHandLabel.Visible = true;
+                    label_RivalHandTotal.Visible = true;
+                    label_RivalHandTotal.BringToFront();
+                    buttonGameOn.Enabled = false;
+                    游戏开始ToolStripMenuItem.Enabled = false;
+                    动作ToolStripMenuItem.Enabled = true;
+                    导出场面信息ToolStripMenuItem.Enabled = true;
+                    GameOn = true;
+                    string DeckTemp = "";
+                    for (int NumberInDeck = 0; ; NumberInDeck++)
+                    {
+                        if (NumberInDeck != 0)
+                        {
+                            DeckTemp += Environment.NewLine;
+                        }
+                        if (Player.SearchCard(NumberInDeck) != null)
+                        {
+                            DeckTemp += Player.SearchCard(NumberInDeck).SerialNo.ToString();
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    DeckFilename = "decktemp";
+                    File.WriteAllText(DeckFilename, DeckTemp, Encoding.UTF8);
+                    msgProcessor.Send("ImportFieldStatus", "#导入场面信息。");
+                }
+            }
+        }
+        private void 抛出异常调试用ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new Exception();
+        }
+        private void 编辑卡组ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (DeckConstruction DeckConstruction = new DeckConstruction())
+            {
+                DeckConstruction.Owner = this;
+                DeckConstruction.ShowDialog();
+            }
+        }
+        private void 用户手册ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://sdercolin.gitbooks.io/feciphervit-manual/content/");
+        }
+        private void bug报告ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://fecipher.lofter.com/post/1d409908_812d278");
+        }
+        private void 下载更新ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://fecipher.lofter.com/post/1d409908_812d27f");
+        }
         #endregion
 
         public List<string> GetAllCardsInfo()
@@ -2384,86 +2513,6 @@ namespace FECipherVit
                 text += "。";
             }
             return text;
-        }
-
-        private void 导出场面信息ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog exportFieldStatus = new SaveFileDialog();
-            exportFieldStatus.Filter = "FECipher场面信息(*.fe0fs)|*.fe0fs";
-            exportFieldStatus.FilterIndex = 1;
-            exportFieldStatus.RestoreDirectory = true;
-            if (exportFieldStatus.ShowDialog() == DialogResult.OK)
-            {
-                File.WriteAllText(exportFieldStatus.FileName, DatabaseVer.ToString() + "#" + Player.toString(), Encoding.UTF8);
-            }
-        }
-
-        private void 导入场面信息ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog importFieldStatus = new OpenFileDialog();
-            importFieldStatus.Filter = "FECipher场面信息(*.fe0fs)|*.fe0fs";
-            importFieldStatus.FilterIndex = 1;
-            importFieldStatus.RestoreDirectory = true;
-            if (importFieldStatus.ShowDialog() == DialogResult.OK)
-            {
-                string[] FieldStatus = File.ReadAllText(importFieldStatus.FileName, Encoding.UTF8).Split(new string[] { "#" }, StringSplitOptions.None);
-                int ImportDataBaseVer = Convert.ToInt32(FieldStatus[0]);
-                if (ImportDataBaseVer > DatabaseVer)
-                {
-                    MessageBox.Show("要导入的数据版本高于当前程序的数据版本，请下载新版程序。");
-                }
-                else
-                {
-                    Player = new User(FieldStatus[1]);
-                    Renew();
-                    buttonGameOn.Visible = false;
-                    buttonTurnStart.Visible = true;
-                    buttonTurnEnd.Visible = true;
-                    buttonUseKizuna.Visible = true;
-                    buttonSupport.Visible = true;
-                    button_CriticalAttack.Visible = true;
-                    button_Miss.Visible = true;
-                    label_RivalHandLabel.Visible = true;
-                    label_RivalHandTotal.Visible = true;
-                    label_RivalHandTotal.BringToFront();
-                    buttonGameOn.Enabled = false;
-                    游戏开始ToolStripMenuItem.Enabled = false;
-                    动作ToolStripMenuItem.Enabled = true;
-                    导出场面信息ToolStripMenuItem.Enabled = true;
-                    GameOn = true;
-                    string DeckTemp = "";
-                    DeckHeroNum = -1;
-                    for (int NumberInDeck = 0; ; NumberInDeck++)
-                    {
-                        if (NumberInDeck != 0)
-                        {
-                            DeckTemp += Environment.NewLine;
-                        }
-                        if (Player.SearchCard(NumberInDeck) != null)
-                        {
-                            DeckTemp += Player.SearchCard(NumberInDeck).SerialNo.ToString();
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    DeckFilename = "decktemp";
-                    File.WriteAllText(DeckFilename, DeckTemp, Encoding.UTF8);
-                    msgProcessor.Send("ImportFieldStatus", "#导入场面信息。");
-                }
-            }
-        }
-
-        private void FECipherVit_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            File.Delete("decktemp");
-            File.Delete("fieldstatustemp");
-        }
-
-        private void 抛出异常调试用ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            throw new Exception();
         }
     }
 }
