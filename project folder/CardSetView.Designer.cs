@@ -41,6 +41,7 @@
             this.button_ToDeckShuffle = new System.Windows.Forms.Button();
             this.pictureBoxCardInfo = new System.Windows.Forms.PictureBox();
             this.textBoxCardInfo = new System.Windows.Forms.TextBox();
+            this.button_Reverse = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCardInfo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -164,11 +165,23 @@
             this.textBoxCardInfo.Size = new System.Drawing.Size(208, 223);
             this.textBoxCardInfo.TabIndex = 11;
             // 
+            // button_Reverse
+            // 
+            this.button_Reverse.Location = new System.Drawing.Point(480, 120);
+            this.button_Reverse.Name = "button_Reverse";
+            this.button_Reverse.Size = new System.Drawing.Size(128, 47);
+            this.button_Reverse.TabIndex = 13;
+            this.button_Reverse.Text = "翻面";
+            this.button_Reverse.UseVisualStyleBackColor = true;
+            this.button_Reverse.Visible = false;
+            this.button_Reverse.Click += new System.EventHandler(this.button_Reverse_Click);
+            // 
             // CardSetView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(625, 558);
+            this.Controls.Add(this.button_Reverse);
             this.Controls.Add(this.pictureBoxCardInfo);
             this.Controls.Add(this.textBoxCardInfo);
             this.Controls.Add(this.button_ToDeckShuffle);
@@ -211,5 +224,6 @@
         private System.Windows.Forms.Button button_ToDeckShuffle;
         private System.Windows.Forms.PictureBox pictureBoxCardInfo;
         private System.Windows.Forms.TextBox textBoxCardInfo;
+        private System.Windows.Forms.Button button_Reverse;
     }
 }

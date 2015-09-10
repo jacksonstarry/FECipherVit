@@ -27,7 +27,7 @@ namespace FECipherVit
             SkillContents.AddRange(CardInfo[16].Split(new string[] { "$$" }, StringSplitOptions.None));
             for (int i = 0; i < SkillContents.Count; i++)
             {
-                if (SkillContents[i][0] != '『' && SkillNames.Count > 0) //for 安娜
+                if (SkillContents[i].Contains("安娜") && SkillContents[i][0] != '『' && SkillNames.Count > 0) //for 安娜
                 {
                     SkillContents[i] = "『100名安娜』" + SkillContents[i];
                 }

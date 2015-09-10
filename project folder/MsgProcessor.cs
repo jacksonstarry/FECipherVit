@@ -14,7 +14,7 @@ namespace FECipherVit
             Owner = _Owner;
         }
         FECipherVit Owner;
-
+        string RcvBuf = "";
         public void Send(string type, string text)
         {
             if (Owner.PointedOutCardPic != null)
@@ -85,6 +85,18 @@ namespace FECipherVit
         }
         public void Receive(string code)
         {
+            Owner.Allinfo += code;
+            if (RcvBuf!="")
+            {
+                if(code.Contains("☂"))
+                {
+                    RcvBuf += code;
+                    string Buf = RcvBuf;
+                    RcvBuf = "";
+                    Receive(Buf);
+                    return;
+                }
+            }
             if (code.Contains("☂☻"))
             {
                 int posEmoji = code.IndexOf("☂☻");
@@ -94,7 +106,11 @@ namespace FECipherVit
                 Receive(code2);
                 return;
             }
-
+            if(!code.Contains("☂"))
+            {
+                RcvBuf += code;
+                return;
+            }
             code = code.Trim('☂', '☻'); 
 
             if (Owner.PointedOutCardPic != null)
@@ -184,6 +200,17 @@ namespace FECipherVit
         public void ReceiveAllCards(List<string> contents)
         {
             Owner.Rival.Deck.CardNum = Convert.ToInt32(contents[contents.IndexOf("[Deck]") + 1]);
+            Owner.Rival.Deck.CardList.Clear();
+            if (contents[contents.IndexOf("[Deck]") + 2] != "-1")
+            {
+                int serialno = Convert.ToInt32(contents[contents.IndexOf("[Deck]") + 2]);
+                Owner.Rival.Deck.CardList.Add(new Card(-1, serialno, Owner.CardData[serialno][4], Convert.ToInt32(Owner.CardData[serialno][13]), Convert.ToInt32(Owner.CardData[serialno][14]), Owner.Rival));
+                Owner.Rival.Deck.CardList[0].Visible = true;
+            }
+            else
+            {
+                Owner.Rival.Deck.CardList.Add(new Card(-1, -1, "", -1, -1, Owner.Rival)); ;
+            }
             Owner.Rival.Hand.CardNum = Convert.ToInt32(contents[contents.IndexOf("[Hand]") + 1]);
             Owner.Rival.Grave.CardList.Clear();
             for (int i = 0; i < Convert.ToInt32(contents[contents.IndexOf("[Grave]") + 1]); i++)
@@ -212,9 +239,9 @@ namespace FECipherVit
                     serialno = Convert.ToInt32(contents[contents.IndexOf("[Kizuna]") + 2 + i]);
                 }
                 Card temp = new Card(-1, serialno, Owner.CardData[serialno][4], Convert.ToInt32(Owner.CardData[serialno][13]), Convert.ToInt32(Owner.CardData[serialno][14]), Owner.Rival);
-                if (Reversed)
+                if (!Reversed)
                 {
-                    temp.FrontShown = false;
+                    temp.FrontShown = true;
                 }
                 temp.IsHorizontal = true;
                 Owner.Rival.Kizuna.CardList.Add(temp);
@@ -234,9 +261,9 @@ namespace FECipherVit
                     serialno = Convert.ToInt32(contents[contents.IndexOf("[KizunaUsed]") + 2 + i]);
                 }
                 Card temp = new Card(-1, serialno, Owner.CardData[serialno][4], Convert.ToInt32(Owner.CardData[serialno][13]), Convert.ToInt32(Owner.CardData[serialno][14]), Owner.Rival);
-                if (Reversed)
+                if (!Reversed)
                 {
-                    temp.FrontShown = false;
+                    temp.FrontShown = true;
                 }
                 temp.IsHorizontal = true;
                 Owner.Rival.KizunaUsed.CardList.Add(temp);

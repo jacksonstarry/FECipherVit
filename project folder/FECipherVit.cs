@@ -7,6 +7,8 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
+using System.Net;
 
 namespace FECipherVit
 {
@@ -18,6 +20,7 @@ namespace FECipherVit
         }
 
         #region Initialization
+        public double Version = 1.1;
         public int DatabaseVer = 20150828;
         public List<string[]> CardData;
         public User Player;
@@ -25,7 +28,7 @@ namespace FECipherVit
         string DeckFilename = "";
         public string PlayerName = "";
         public string RivalName = "";
-        //public string Allinfo = "";
+        public string Allinfo = "";
         public bool GameOn = false;
         List<CardPic> HandCardPics = new List<CardPic>();
         List<CardPic> OrbCardPics = new List<CardPic>();
@@ -44,6 +47,7 @@ namespace FECipherVit
         CardPic RivalDeckCardPic;
         CardPic RivalGraveCardPic;
         CardPic RivalSupportCardPic;
+        int HeroNum;
         public static Control CardPicClicked = null;
 
         public Graphics BorderPainter;
@@ -51,6 +55,7 @@ namespace FECipherVit
 
         string report = "创建时间：" + DateTime.Now.ToString();
 
+        Thread UpdateThread;
         public Connection connection;
         public SocketFunc socket;
         public System.Action<string> ReceiveAction;
@@ -116,6 +121,37 @@ namespace FECipherVit
             connection = new Connection(this);
             connection.ShowDialog();
             ContextMenuStripRenew();
+            UpdateThread = new Thread(new ThreadStart(CheckUpdate));
+            UpdateThread.Start();
+        }
+        void CheckUpdate()
+        {
+            try
+            {
+                HttpWebRequest oHttp_Web_Req = (HttpWebRequest)WebRequest.Create("http://sdercolin.com/FECipherVitLatestVersion.txt");
+                Stream oStream = oHttp_Web_Req.GetResponse().GetResponseStream();
+                string VersionString;
+                using (StreamReader respStreamReader = new StreamReader(oStream, Encoding.UTF8))
+                {
+                    VersionString = respStreamReader.ReadToEnd();
+                }
+                double LatestVersion = Convert.ToDouble(VersionString);
+                if (LatestVersion - Version >= 0.1)
+                {
+                    MessageBox.Show("检查到重要的程序更新。请立即更新程序，否则游戏很可能不能正常进行。", "检查更新");
+                    System.Diagnostics.Process.Start("http://fecipher.lofter.com/post/1d409908_812d27f");
+                }
+                else if (LatestVersion > Version)
+                {
+                    MessageBox.Show("检查到程序更新。请尽快下载新版本。", "检查更新");
+                    System.Diagnostics.Process.Start("http://fecipher.lofter.com/post/1d409908_812d27f");
+                }
+            }
+            catch { }
+            if (UpdateThread != null)
+            {
+                UpdateThread.Abort();
+            }
         }
         void ContextMenuStripRenew()
         {
@@ -138,7 +174,6 @@ namespace FECipherVit
             this.查看区域ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.查看区域ToolStripMenuItem.Text = "查看区域";
             this.查看区域ToolStripMenuItem.Click += new System.EventHandler(this.查看区域ToolStripMenuItem_Click);
-
             展示ToolStripMenuItem = new ToolStripMenuItem();
             this.展示ToolStripMenuItem.Name = "展示ToolStripMenuItem";
             this.展示ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
@@ -236,7 +271,6 @@ namespace FECipherVit
             this.指定为对象ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.指定为对象ToolStripMenuItem.Text = "指定为对象";
             this.指定为对象ToolStripMenuItem.Click += new System.EventHandler(this.指定为对象ToolStripMenuItem_Click);
-
             this.contextMenuStrip_Card.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                         this.抽卡ToolStripMenuItem,
                         this.抽复数张卡ToolStripMenuItem,
@@ -530,6 +564,7 @@ namespace FECipherVit
                 KizunaCardPics.Add(new CardPic(Player.Kizuna.CardList[i], "Kizuna"));
                 KizunaCardPics[i].ContextMenuStrip = contextMenuStrip_Card;
                 KizunaCardPics[i].MouseClick += new MouseEventHandler(Card_MouseClick);
+                KizunaCardPics[i].MouseDoubleClick += new MouseEventHandler(Kizuna_MouseDoubleClick);
                 KizunaCardPics[i].MouseDown += new MouseEventHandler(Card_MouseDown);
             }
             for (int i = 0; i < CardCount; i++)
@@ -566,6 +601,7 @@ namespace FECipherVit
                 KizunaUsedCardPics.Add(new CardPic(Player.KizunaUsed.CardList[i], "KizunaUsed"));
                 KizunaUsedCardPics[i].ContextMenuStrip = contextMenuStrip_Card;
                 KizunaUsedCardPics[i].MouseClick += new MouseEventHandler(Card_MouseClick);
+                KizunaUsedCardPics[i].MouseDoubleClick += new MouseEventHandler(Kizuna_MouseDoubleClick);
                 KizunaUsedCardPics[i].MouseDown += new MouseEventHandler(Card_MouseDown);
             }
             for (int i = 0; i < CardCount; i++)
@@ -600,10 +636,14 @@ namespace FECipherVit
             if (Player.Deck.CardList.Count > 0)
             {
                 DeckCardPic = new CardPic(Player.Deck.CardList[0], "Deck");
-                DeckCardPic.ReverseToBack();
                 DeckCardPic.Location = new Point(522, 478);
+                if (!DeckCardPic.FrontShown)
+                {
+                    DeckCardPic.ReverseToBack();
+                }
                 DeckCardPic.ContextMenuStrip = contextMenuStrip_Card;
                 DeckCardPic.MouseDown += new MouseEventHandler(Card_MouseDown);
+                DeckCardPic.MouseClick += new MouseEventHandler(Card_MouseClick);
                 DeckCardPic.MouseDoubleClick += new MouseEventHandler(Deck_MouseDoubleClick);
                 this.Controls.Add(DeckCardPic);
                 DeckCardPic.BringToFront();
@@ -833,11 +873,19 @@ namespace FECipherVit
             }
             if (Rival.Deck.CardNum > 0)
             {
-                RivalDeckCardPic = new CardPic("RivalDeck");
-                RivalDeckCardPic.ReverseToBack();
+                if (Rival.Deck.CardList[0].SerialNo == -1)
+                {
+                    RivalDeckCardPic = new CardPic("RivalDeck");
+                    RivalDeckCardPic.ReverseToBack();
+                }
+                else
+                {
+                    RivalDeckCardPic = new CardPic(Rival.Deck.CardList[0], "RivalDeck");
+                }
                 RivalDeckCardPic.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
                 RivalDeckCardPic.Location = new Point(9, 131);
                 RivalDeckCardPic.ContextMenuStrip = contextMenuStrip_RivalCard;
+                RivalDeckCardPic.MouseClick += new MouseEventHandler(Card_MouseClick);
                 RivalDeckCardPic.MouseDown += new MouseEventHandler(Card_MouseDown);
                 this.Controls.Add(RivalDeckCardPic);
                 RivalDeckCardPic.BringToFront();
@@ -946,27 +994,34 @@ namespace FECipherVit
             }
             string[] CardDataInfo = CardData[thisCard.SerialNo];
             string str = "";
-            str += "日文卡名：" + CardDataInfo[3] + Environment.NewLine;
-            str += "中文卡名：" + CardDataInfo[4] + Environment.NewLine;
-            str += "阶级/兵种：" + CardDataInfo[7] + "/" + CardDataInfo[8] + Environment.NewLine;
-            str += "战斗力/支援力/射程：" + CardDataInfo[13] + "/" + CardDataInfo[14] + "/" + CardDataInfo[15] + Environment.NewLine;
-            str += "出击/转职费用：" + CardDataInfo[5] + "/" + CardDataInfo[6] + Environment.NewLine;
-            str += "势力：" + CardDataInfo[9] + Environment.NewLine;
-            str += "性别/武器/属性：" + CardDataInfo[10] + "/" + CardDataInfo[11] + "/";
-            if (CardDataInfo[12] == "")
+            if (AppConfig.GetValue("CardInfoBrief") == "False")
             {
-                str += "-" + Environment.NewLine;
+                str += "日文卡名：" + CardDataInfo[3] + Environment.NewLine;
+                str += "中文卡名：" + CardDataInfo[4] + Environment.NewLine;
+                str += "阶级/兵种：" + CardDataInfo[7] + "/" + CardDataInfo[8] + Environment.NewLine;
+                str += "战斗力/支援力/射程：" + CardDataInfo[13] + "/" + CardDataInfo[14] + "/" + CardDataInfo[15] + Environment.NewLine;
+                str += "出击/转职费用：" + CardDataInfo[5] + "/" + CardDataInfo[6] + Environment.NewLine;
+                str += "势力：" + CardDataInfo[9] + Environment.NewLine;
+                str += "性别/武器/属性：" + CardDataInfo[10] + "/" + CardDataInfo[11] + "/";
+
+                if (CardDataInfo[12] == "")
+                {
+                    str += "-" + Environment.NewLine;
+                }
+                else
+                {
+                    str += CardDataInfo[12] + Environment.NewLine;
+                }
+                str += Environment.NewLine;
+                str += "能力：" + Environment.NewLine;
             }
-            else
-            {
-                str += CardDataInfo[12] + Environment.NewLine;
-            }
-            str += Environment.NewLine;
-            str += "能力：" + Environment.NewLine;
             str += CardDataInfo[16].Replace("$$", Environment.NewLine) + Environment.NewLine;
             if (CardDataInfo[17] != "" && CardDataInfo[17] != "-")
             {
-                str += "支援能力：" + Environment.NewLine;
+                if (AppConfig.GetValue("CardInfoBrief") == "False")
+                {
+                    str += "支援能力：" + Environment.NewLine;
+                }
                 str += CardDataInfo[17] + Environment.NewLine;
             }
             if (thisCard.OverlayCardNo.Count != 0)
@@ -1000,6 +1055,17 @@ namespace FECipherVit
             if (e.Button == MouseButtons.Left)
             {
                 CardPic thisCardPic = (CardPic)sender;
+                if (thisCardPic.thisCard == null)
+                {
+                    return;
+                }
+                if (thisCardPic.thisCard.BelongedRegion().Equals(Player.Deck) || thisCardPic.thisCard.BelongedRegion().Equals(Rival.Deck))
+                {
+                    if (!thisCardPic.Visible)
+                    {
+                        return;
+                    }
+                }
                 CardInfoRenew(thisCardPic.thisCard);
             }
         }
@@ -1040,6 +1106,13 @@ namespace FECipherVit
                 查看退避区ToolStripMenuItem_Click(null, null);
             }
         }
+        public void Kizuna_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                查看羁绊区ToolStripMenuItem_Click(null, null);
+            }
+        }
         public void RivalGrave_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -1063,27 +1136,7 @@ namespace FECipherVit
         private void buttonGameOn_Click(object sender, EventArgs e)
         {
             Reset();
-            int HeroNum;
             int HeroSerialNo;
-            if (AppConfig.GetValue("UseFirsrCardAsHero") == "True")
-            {
-                HeroNum = 0;
-            }
-            else
-            {
-                SelectHero SelectHeroFromDeck = new SelectHero(Player, this);
-                SelectHeroFromDeck.ShowDialog();
-                if (SelectHeroFromDeck.DialogResult == DialogResult.OK)
-                {
-                    HeroNum = SelectHeroFromDeck.HeroNum;
-                }
-                else
-                {
-                    SelectHeroFromDeck.Dispose();
-                    return;
-                }
-                SelectHeroFromDeck.Dispose();
-            }
             buttonGameOn.Visible = false;
             buttonTurnStart.Visible = true;
             buttonTurnEnd.Visible = true;
@@ -1269,7 +1322,9 @@ namespace FECipherVit
                         this.翻面ToolStripMenuItem,
                         this.羁绊卡右移ToolStripMenuItem,
                         this.复数羁绊卡右移ToolStripMenuItem,
+                        this.查看区域ToolStripMenuItem,
                         this.其他ToolStripMenuItem});
+                        查看区域ToolStripMenuItem.Text = "查看羁绊区：" + (Player.Kizuna.CardList.Count + Player.KizunaUsed.CardList.Count).ToString() + "张";
                         this.其他ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
                         this.加入卡组ToolStripMenuItem,
                         this.加入手牌ToolStripMenuItem,
@@ -1284,7 +1339,9 @@ namespace FECipherVit
                         this.翻面ToolStripMenuItem,
                         this.羁绊卡右移ToolStripMenuItem,
                         this.复数羁绊卡右移ToolStripMenuItem,
+                        this.查看区域ToolStripMenuItem,
                         this.其他ToolStripMenuItem});
+                        查看区域ToolStripMenuItem.Text = "查看羁绊区：" + (Player.Kizuna.CardList.Count + Player.KizunaUsed.CardList.Count).ToString() + "张";
                         this.其他ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
                         this.加入卡组ToolStripMenuItem,
                         this.加入手牌ToolStripMenuItem,
@@ -1385,6 +1442,24 @@ namespace FECipherVit
             {
                 DeckFilename = DeckSelect.SelectedDeckFilename;
                 Reset();
+                if (AppConfig.GetValue("UseFirsrCardAsHero") == "True")
+                {
+                    HeroNum = 0;
+                }
+                else
+                {
+                    SelectHero SelectHeroFromDeck = new SelectHero(Player, this);
+                    SelectHeroFromDeck.ShowDialog();
+                    if (SelectHeroFromDeck.DialogResult == DialogResult.OK)
+                    {
+                        HeroNum = SelectHeroFromDeck.HeroNum;
+                    }
+                    else
+                    {
+                        HeroNum = 0;
+                    }
+                    SelectHeroFromDeck.Dispose();
+                }
                 Renew();
                 buttonGameOn.Enabled = true;
                 游戏开始ToolStripMenuItem.Enabled = true;
@@ -1820,8 +1895,6 @@ namespace FECipherVit
                 thisCard.OverlayCardNo = new List<int>();
             }
             Player.MoveCard(thisCard, Player.Deck);
-            thisCard.FrontShown = true;
-            thisCard.IsHorizontal = false;
             thisCard.Comments = "";
             Player.Deck.Shuffle();
             msgProcessor.Send("Update", "");
@@ -1841,8 +1914,6 @@ namespace FECipherVit
                 thisCard.OverlayCardNo = new List<int>();
             }
             Player.MoveCard(thisCard, Player.Deck, 0);
-            thisCard.FrontShown = true;
-            thisCard.IsHorizontal = false;
             thisCard.Comments = "";
             msgProcessor.Send("Update", "");
             Renew();
@@ -1861,8 +1932,6 @@ namespace FECipherVit
                 thisCard.OverlayCardNo = new List<int>();
             }
             Player.MoveCard(thisCard, Player.Deck);
-            thisCard.FrontShown = true;
-            thisCard.IsHorizontal = false;
             thisCard.Comments = "";
             msgProcessor.Send("Update", "");
             Renew();
@@ -1872,10 +1941,17 @@ namespace FECipherVit
             Card thisCard = ((CardPic)CardPicClicked).thisCard;
             if (thisCard.BelongedRegion().Equals(Player.Deck))
             {
+                Player.Deck.CardList[0].FrontShown = true;
+                Player.Deck.CardList[0].Visible = true;
+                Renew();
                 msgProcessor.Send("ShowCard", "#展示卡组顶牌：[" + thisCard.UnitTitle + " " + thisCard.UnitName + "]。");
+                Player.Deck.CardList[0].FrontShown = false;
+                Player.Deck.CardList[0].Visible = false;
             }
-            msgProcessor.Send("ShowCard", "#展示[" + GetRegionNameInString(thisCard.BelongedRegion()) + "(" + (thisCard.BelongedRegion().CardList.IndexOf(thisCard) + 1).ToString() + ")]：[" + thisCard.UnitTitle + " " + thisCard.UnitName + "]。");
-            Renew();
+            else
+            {
+                msgProcessor.Send("ShowCard", "#展示[" + GetRegionNameInString(thisCard.BelongedRegion()) + "(" + (thisCard.BelongedRegion().CardList.IndexOf(thisCard) + 1).ToString() + ")]：[" + thisCard.UnitTitle + " " + thisCard.UnitName + "]。");
+            }
         }
         private void 查看手牌ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1895,6 +1971,12 @@ namespace FECipherVit
                         break;
                     case "Grave":
                         查看退避区ToolStripMenuItem_Click(null, null);
+                        break;
+                    case "Kizuna":
+                        查看羁绊区ToolStripMenuItem_Click(null, null);
+                        break;
+                    case "KizunaUsed":
+                        查看羁绊区ToolStripMenuItem_Click(null, null);
                         break;
                 }
             }
@@ -1925,6 +2007,13 @@ namespace FECipherVit
         private void 查看退避区ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CardSetView CheckGraveRegion = new CardSetView(Player.Grave, "Grave", Player, this);
+            CheckGraveRegion.Owner = this;
+            CheckGraveRegion.ShowDialog();
+            CheckGraveRegion.Dispose();
+        }
+        private void 查看羁绊区ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CardSetView CheckGraveRegion = new CardSetView(Player.Kizuna, "Kizuna", Player, this);
             CheckGraveRegion.Owner = this;
             CheckGraveRegion.ShowDialog();
             CheckGraveRegion.Dispose();
@@ -2193,6 +2282,15 @@ namespace FECipherVit
             List<string> allcards = new List<string> { PlayerName, System.DateTime.Now.ToString("HH:mm:ss") };
             allcards.Add("[Deck]");
             allcards.Add(Player.Deck.CardList.Count.ToString());
+            if (Player.Deck.CardList.Count > 0 && DeckCardPic.FrontShown)
+            {
+                allcards.Add(Player.Deck.CardList[0].SerialNo.ToString());
+                DeckCardPic.FrontShown = false;
+            }
+            else
+            {
+                allcards.Add("-1");
+            }
             allcards.Add("[Hand]");
             allcards.Add(Player.Hand.CardList.Count.ToString());
             allcards.Add("[Grave]");

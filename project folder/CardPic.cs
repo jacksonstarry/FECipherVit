@@ -18,7 +18,6 @@ namespace FECipherVit
             Height = 112;
             try
             {
-
                 Image = Image.FromFile(@"img/" + SerialNo.ToString() + ".jpg");
             }
             catch
@@ -27,6 +26,9 @@ namespace FECipherVit
             }
             thisCard = card;
             Type = type;
+            FrontShown = card.FrontShown;
+            IsHorizontal = card.IsHorizontal;
+            Visible = card.Visible;
         }
         public CardPic(string type)
         {
@@ -42,11 +44,17 @@ namespace FECipherVit
                 Image = this.ErrorImage;
             }
             Type = type;
+            if(type=="RivalDeck")
+            {
+                Visible = false;
+                FrontShown = false;
+            }
         }
         public int NumberInDeck;
         public int SerialNo;
-        public bool FrontShown = true;
+        public bool FrontShown = false;
         public bool IsHorizontal = false;
+        public new bool Visible = false;
         public Card thisCard;
         public string Type;
 

@@ -26,19 +26,7 @@ namespace FECipherVit
 
         private void CardSetView_Load(object sender, EventArgs e)
         {
-            CardListRenew();
-        }
-        private void CardListRenew()
-        {
-            int index_old = CardListBox.SelectedIndex;
-            CardListBox.Items.Clear();
-            foreach (Card card in ThisRegion.CardList)
-            {
-                string temp = "";
-                temp += card.UnitTitle + " " + card.UnitName;
-                CardListBox.Items.Add(temp);
-            }
-            switch(RegionType)
+            switch (RegionType)
             {
                 case "Deck":
                     this.Text = "查看卡组：" + ThisRegion.CardList.Count.ToString() + "张";
@@ -63,6 +51,50 @@ namespace FECipherVit
                     this.Text = "查看手牌：" + ThisRegion.CardList.Count.ToString() + "张";
                     button_ToHand.Enabled = false;
                     break;
+                case "Kizuna":
+                    this.Text = "查看羁绊区：" + (Player.Kizuna.CardList.Count + Player.KizunaUsed.CardList.Count).ToString() + "张";
+                    button_Show.Visible = false;
+                    button_Reverse.Visible = true;
+                    break;
+            }
+            CardListRenew();
+        }
+        private void CardListRenew()
+        {
+            int index_old = CardListBox.SelectedIndex;
+            CardListBox.Items.Clear();
+            if (RegionType != "Kizuna")
+            {
+                foreach (Card card in ThisRegion.CardList)
+                {
+                    string temp = "";
+                    temp += card.UnitTitle + " " + card.UnitName;
+
+                    CardListBox.Items.Add(temp);
+                }
+            }
+            else
+            {
+                foreach (Card card in Player.Kizuna.CardList)
+                {
+                    string temp = "";
+                    temp += card.UnitTitle + " " + card.UnitName;
+                    if (!card.FrontShown)
+                    {
+                        temp += "（已翻面）";
+                    }
+                    CardListBox.Items.Add(temp);
+                }
+                foreach (Card card in Player.KizunaUsed.CardList)
+                {
+                    string temp = "";
+                    temp += card.UnitTitle + " " + card.UnitName;
+                    if (!card.FrontShown)
+                    {
+                        temp += "（已翻面）";
+                    }
+                    CardListBox.Items.Add(temp);
+                }
             }
             if (index_old < 0)
             {
@@ -81,7 +113,19 @@ namespace FECipherVit
         {
             if (CardListBox.SelectedIndex >= 0)
             {
-                Card thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                Card thisCard;
+                if (RegionType != "Kizuna")
+                {
+                    thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                }
+                else if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
                 int CardNoWithSameName = -1;
                 if (Player.FrontField.SearchCard(thisCard.UnitName) != null)
                 {
@@ -122,7 +166,19 @@ namespace FECipherVit
         {
             if (CardListBox.SelectedIndex >= 0)
             {
-                Card thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                Card thisCard;
+                if (RegionType != "Kizuna")
+                {
+                    thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                }
+                else if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
                 int CardNoWithSameName = -1;
                 if (Player.BackField.SearchCard(thisCard.UnitName) != null)
                 {
@@ -163,7 +219,19 @@ namespace FECipherVit
         {
             if (CardListBox.SelectedIndex >= 0)
             {
-                Card thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                Card thisCard;
+                if (RegionType != "Kizuna")
+                {
+                    thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                }
+                else if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
                 Owner.msgProcessor.Send("ShowCard", "#展示[" + Owner.GetRegionNameInString(thisCard.BelongedRegion()) + "(" + (thisCard.BelongedRegion().CardList.IndexOf(thisCard) + 1).ToString() + ")]：[" + thisCard.UnitTitle + " " + thisCard.UnitName + "]。");
                 CardListRenew();
                 Owner.Renew();
@@ -173,7 +241,19 @@ namespace FECipherVit
         {
             if (CardListBox.SelectedIndex >= 0)
             {
-                Card thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                Card thisCard;
+                if (RegionType != "Kizuna")
+                {
+                    thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                }
+                else if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
                 Owner.msgProcessor.Send("ToHand", Owner.GetTextOfMovingToRegion(thisCard, "Hand", true));
                 Player.MoveCard(thisCard, Player.Hand);
                 thisCard.FrontShown = true;
@@ -197,7 +277,19 @@ namespace FECipherVit
         {
             if (CardListBox.SelectedIndex >= 0)
             {
-                Card thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                Card thisCard;
+                if (RegionType != "Kizuna")
+                {
+                    thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                }
+                else if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
                 Owner.msgProcessor.Send("ToGrave", Owner.GetTextOfMovingToRegion(thisCard, "Grave", true));
                 Player.MoveCard(thisCard, Player.Grave);
                 thisCard.FrontShown = true;
@@ -220,7 +312,19 @@ namespace FECipherVit
         {
             if (CardListBox.SelectedIndex >= 0)
             {
-                Card thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                Card thisCard;
+                if (RegionType != "Kizuna")
+                {
+                    thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                }
+                else if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
                 Owner.msgProcessor.Send("ToDeckShuffle", Owner.GetTextOfMovingToRegion(thisCard, "DeckShuffle", true));
                 if (thisCard.OverlayCardNo.Count != 0)
                 {
@@ -232,8 +336,6 @@ namespace FECipherVit
                     thisCard.OverlayCardNo = new List<int>();
                 }
                 Player.MoveCard(thisCard, Player.Deck);
-                thisCard.FrontShown = true;
-                thisCard.IsHorizontal = false;
                 thisCard.Comments = "";
                 Player.Deck.Shuffle();
                 Owner.msgProcessor.Send("Update", "");
@@ -245,7 +347,19 @@ namespace FECipherVit
         {
             if (CardListBox.SelectedIndex >= 0)
             {
-                Card thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                Card thisCard;
+                if (RegionType != "Kizuna")
+                {
+                    thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                }
+                else if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
                 Owner.msgProcessor.Send("ToDeckTop", Owner.GetTextOfMovingToRegion(thisCard, "DeckTop", true));
                 if (thisCard.OverlayCardNo.Count != 0)
                 {
@@ -257,8 +371,6 @@ namespace FECipherVit
                     thisCard.OverlayCardNo = new List<int>();
                 }
                 Player.MoveCard(thisCard, Player.Deck, 0);
-                thisCard.FrontShown = true;
-                thisCard.IsHorizontal = false;
                 thisCard.Comments = "";
                 Owner.msgProcessor.Send("Update", "");
                 CardListRenew();
@@ -269,7 +381,19 @@ namespace FECipherVit
         {
             if (CardListBox.SelectedIndex >= 0)
             {
-                Card thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                Card thisCard;
+                if (RegionType != "Kizuna")
+                {
+                    thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                }
+                else if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
                 Owner.msgProcessor.Send("ToDeckBottom", Owner.GetTextOfMovingToRegion(thisCard, "DeckBottom", true));
                 if (thisCard.OverlayCardNo.Count != 0)
                 {
@@ -281,10 +405,34 @@ namespace FECipherVit
                     thisCard.OverlayCardNo = new List<int>();
                 }
                 Player.MoveCard(thisCard, Player.Deck);
-                thisCard.FrontShown = true;
-                thisCard.IsHorizontal = false;
                 thisCard.Comments = "";
                 Owner.msgProcessor.Send("Update", "");
+                CardListRenew();
+                Owner.Renew();
+            }
+        }
+        private void button_Reverse_Click(object sender, EventArgs e)
+        {
+            if (CardListBox.SelectedIndex >= 0)
+            {
+                Card thisCard;
+                if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
+                thisCard.FrontShown = !thisCard.FrontShown;
+                if (thisCard.FrontShown)
+                {
+                    Owner.msgProcessor.Send("UnReverse", "#将[" + Owner.GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]翻到正面。");
+                }
+                else
+                {
+                    Owner.msgProcessor.Send("Reverse", "#将[" + Owner.GetRegionNameInString(thisCard.BelongedRegion()) + "][" + thisCard.UnitTitle + " " + thisCard.UnitName + "]翻到背面。");
+                }
                 CardListRenew();
                 Owner.Renew();
             }
@@ -313,7 +461,20 @@ namespace FECipherVit
         {
             if (CardListBox.SelectedIndex >= 0 && CardListBox.SelectedIndex < CardListBox.Items.Count)
             {
-                CardInfoRenew(ThisRegion.CardList[CardListBox.SelectedIndex]);
+                Card thisCard;
+                if (RegionType != "Kizuna")
+                {
+                    thisCard = ThisRegion.CardList[CardListBox.SelectedIndex];
+                }
+                else if (CardListBox.SelectedIndex >= Player.Kizuna.CardList.Count)
+                {
+                    thisCard = Player.KizunaUsed.CardList[CardListBox.SelectedIndex - Player.Kizuna.CardList.Count];
+                }
+                else
+                {
+                    thisCard = Player.Kizuna.CardList[CardListBox.SelectedIndex];
+                }
+                CardInfoRenew(thisCard);
             }
         }
         public void CardInfoRenew(Card thisCard)
@@ -370,5 +531,7 @@ namespace FECipherVit
             }
             textBoxCardInfo.Text = str;
         }
+
+
     }
 }

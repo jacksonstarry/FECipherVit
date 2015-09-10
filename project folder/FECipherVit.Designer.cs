@@ -55,6 +55,7 @@
             this.查看退避区ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.查看手牌ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.查看对手退避区ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.查看羁绊区ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.手牌操作ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.抽卡ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.抽复数张卡ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,6 +80,10 @@
             this.抛出异常调试用ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.编辑卡组ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.用户手册ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.下载更新ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bug报告ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonTurnStart = new System.Windows.Forms.Button();
             this.buttonUseKizuna = new System.Windows.Forms.Button();
@@ -90,10 +95,6 @@
             this.label_RivalHandTotal = new System.Windows.Forms.Label();
             this.button_CriticalAttack = new System.Windows.Forms.Button();
             this.button_Miss = new System.Windows.Forms.Button();
-            this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.用户手册ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.下载更新ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.bug报告ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip_HandRegion.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCardInfo)).BeginInit();
@@ -302,7 +303,8 @@
             this.查看卡组ToolStripMenuItem,
             this.查看退避区ToolStripMenuItem,
             this.查看手牌ToolStripMenuItem1,
-            this.查看对手退避区ToolStripMenuItem});
+            this.查看对手退避区ToolStripMenuItem,
+            this.查看羁绊区ToolStripMenuItem});
             this.查看区域ToolStripMenuItem1.Name = "查看区域ToolStripMenuItem1";
             this.查看区域ToolStripMenuItem1.Size = new System.Drawing.Size(228, 22);
             this.查看区域ToolStripMenuItem1.Text = "查看区域";
@@ -334,6 +336,13 @@
             this.查看对手退避区ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.查看对手退避区ToolStripMenuItem.Text = "查看对手退避区";
             this.查看对手退避区ToolStripMenuItem.Click += new System.EventHandler(this.查看对手退避区ToolStripMenuItem_Click);
+            // 
+            // 查看羁绊区ToolStripMenuItem
+            // 
+            this.查看羁绊区ToolStripMenuItem.Name = "查看羁绊区ToolStripMenuItem";
+            this.查看羁绊区ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.查看羁绊区ToolStripMenuItem.Text = "查看羁绊区";
+            this.查看羁绊区ToolStripMenuItem.Click += new System.EventHandler(this.查看羁绊区ToolStripMenuItem_Click);
             // 
             // 手牌操作ToolStripMenuItem
             // 
@@ -530,6 +539,37 @@
             this.设置ToolStripMenuItem.Text = "设置";
             this.设置ToolStripMenuItem.Click += new System.EventHandler(this.设置ToolStripMenuItem_Click);
             // 
+            // 帮助ToolStripMenuItem
+            // 
+            this.帮助ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.用户手册ToolStripMenuItem,
+            this.下载更新ToolStripMenuItem,
+            this.bug报告ToolStripMenuItem});
+            this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
+            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(44, 28);
+            this.帮助ToolStripMenuItem.Text = "帮助";
+            // 
+            // 用户手册ToolStripMenuItem
+            // 
+            this.用户手册ToolStripMenuItem.Name = "用户手册ToolStripMenuItem";
+            this.用户手册ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.用户手册ToolStripMenuItem.Text = "用户手册";
+            this.用户手册ToolStripMenuItem.Click += new System.EventHandler(this.用户手册ToolStripMenuItem_Click);
+            // 
+            // 下载更新ToolStripMenuItem
+            // 
+            this.下载更新ToolStripMenuItem.Name = "下载更新ToolStripMenuItem";
+            this.下载更新ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.下载更新ToolStripMenuItem.Text = "下载更新";
+            this.下载更新ToolStripMenuItem.Click += new System.EventHandler(this.下载更新ToolStripMenuItem_Click);
+            // 
+            // bug报告ToolStripMenuItem
+            // 
+            this.bug报告ToolStripMenuItem.Name = "bug报告ToolStripMenuItem";
+            this.bug报告ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.bug报告ToolStripMenuItem.Text = "Bug报告";
+            this.bug报告ToolStripMenuItem.Click += new System.EventHandler(this.bug报告ToolStripMenuItem_Click);
+            // 
             // 关于ToolStripMenuItem
             // 
             this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
@@ -636,37 +676,6 @@
             this.button_Miss.UseVisualStyleBackColor = true;
             this.button_Miss.Visible = false;
             this.button_Miss.Click += new System.EventHandler(this.button_Miss_Click);
-            // 
-            // 帮助ToolStripMenuItem
-            // 
-            this.帮助ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.用户手册ToolStripMenuItem,
-            this.下载更新ToolStripMenuItem,
-            this.bug报告ToolStripMenuItem});
-            this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
-            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(44, 28);
-            this.帮助ToolStripMenuItem.Text = "帮助";
-            // 
-            // 用户手册ToolStripMenuItem
-            // 
-            this.用户手册ToolStripMenuItem.Name = "用户手册ToolStripMenuItem";
-            this.用户手册ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.用户手册ToolStripMenuItem.Text = "用户手册";
-            this.用户手册ToolStripMenuItem.Click += new System.EventHandler(this.用户手册ToolStripMenuItem_Click);
-            // 
-            // 下载更新ToolStripMenuItem
-            // 
-            this.下载更新ToolStripMenuItem.Name = "下载更新ToolStripMenuItem";
-            this.下载更新ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.下载更新ToolStripMenuItem.Text = "下载更新";
-            this.下载更新ToolStripMenuItem.Click += new System.EventHandler(this.下载更新ToolStripMenuItem_Click);
-            // 
-            // bug报告ToolStripMenuItem
-            // 
-            this.bug报告ToolStripMenuItem.Name = "bug报告ToolStripMenuItem";
-            this.bug报告ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.bug报告ToolStripMenuItem.Text = "Bug报告";
-            this.bug报告ToolStripMenuItem.Click += new System.EventHandler(this.bug报告ToolStripMenuItem_Click);
             // 
             // FECipherVit
             // 
@@ -775,6 +784,7 @@
         private System.Windows.Forms.ToolStripMenuItem 用户手册ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 下载更新ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bug报告ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 查看羁绊区ToolStripMenuItem;
     }
 }
 

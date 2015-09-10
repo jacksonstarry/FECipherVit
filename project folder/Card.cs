@@ -12,9 +12,12 @@ namespace FECipherVit
         {
             NumberInDeck = _NumberInDeck;
             SerialNo = _SerialNo;
-            int pos = _CardName.IndexOf(" ");
-            UnitTitle = _CardName.Substring(0, pos);
-            UnitName = _CardName.Substring(pos + 1);
+            if (_CardName != "")
+            {
+                int pos = _CardName.IndexOf(" ");
+                UnitTitle = _CardName.Substring(0, pos);
+                UnitName = _CardName.Substring(pos + 1);
+            }
             Power = _Power;
             Support = _Support;
             Controller = _Controller;
@@ -32,10 +35,11 @@ namespace FECipherVit
             Support = Convert.ToInt32(Card[5]);
             IsHorizontal = Convert.ToBoolean(Card[6]);
             FrontShown = Convert.ToBoolean(Card[7]);
+            Visible = Convert.ToBoolean(Card[8]);
             List<string> temp = new List<string>();
-            if (Card[8] != "()")
+            if (Card[9] != "()")
             {
-                temp.AddRange(Card[8].Replace("(", "").Replace(")", "").Split(new string[] { ";" }, StringSplitOptions.None));
+                temp.AddRange(Card[9].Replace("(", "").Replace(")", "").Split(new string[] { ";" }, StringSplitOptions.None));
                 while (temp.Contains(""))
                 {
                     temp.Remove("");
@@ -46,7 +50,7 @@ namespace FECipherVit
             {
                 OverlayCardNo = new List<int>();
             }
-            Comments = Card[9];
+            Comments = Card[10];
             Controller = _Controller;
         }
         public int NumberInDeck;
@@ -57,7 +61,8 @@ namespace FECipherVit
         public int Support;
         public User Controller;
         public bool IsHorizontal = false;
-        public bool FrontShown = true;
+        public bool FrontShown = false;
+        public bool Visible = false;
         public List <int> OverlayCardNo;
         public string Comments = "";
 
@@ -88,6 +93,7 @@ namespace FECipherVit
             text += Support.ToString() + ",";
             text += IsHorizontal.ToString() + ",";
             text += FrontShown.ToString() + ",";
+            text += Visible.ToString() + ",";
             text += "(";
             foreach(int no in OverlayCardNo)
             {
@@ -159,11 +165,15 @@ namespace FECipherVit
         }
         public Card SearchCard(string unitname)
         {
-            foreach (object card in CardList)
+            foreach (Card card in CardList)
             {
-                if (((Card)card).UnitName == unitname)
+                if (card.UnitName == unitname)
                 {
-                    return (Card)card;
+                    return card;
+                }
+                if (card.UnitTitle == "自称马尔斯的剑士" && unitname == "马尔斯")
+                {
+                    return card;
                 }
             }
             return null;
@@ -277,22 +287,62 @@ namespace FECipherVit
 
         public void MoveCard(Region fromWhere, int Number, Region toWhere)
         {
+            if (toWhere.Equals(this.Deck) || toWhere.Equals(this.Orb))
+            {
+                fromWhere.CardList[Number].FrontShown = false;
+                fromWhere.CardList[Number].Visible = false;
+            }
+            else
+            {
+                fromWhere.CardList[Number].FrontShown = true;
+                fromWhere.CardList[Number].Visible = true;
+            }
             toWhere.CardList.Add(fromWhere.CardList[Number]);
             fromWhere.CardList.RemoveAt(Number);
         }
         public void MoveCard(Region fromWhere, int Number, Region toWhere, int NumberDes )
         {
+            if (toWhere.Equals(this.Deck) || toWhere.Equals(this.Orb))
+            {
+                fromWhere.CardList[Number].FrontShown = false;
+                fromWhere.CardList[Number].Visible = false;
+            }
+            else
+            {
+                fromWhere.CardList[Number].FrontShown = true;
+                fromWhere.CardList[Number].Visible = true;
+            }
             toWhere.CardList.Insert(NumberDes, fromWhere.CardList[Number]);
             fromWhere.CardList.RemoveAt(Number);
         }
         public void MoveCard(Card card, Region toWhere)
         {
+            if (toWhere.Equals(this.Deck) || toWhere.Equals(this.Orb))
+            {
+                card.FrontShown = false;
+                card.Visible = false;
+            }
+            else
+            {
+                card.FrontShown = true;
+                card.Visible = true;
+            }
             Region fromWhere = card.BelongedRegion();
             fromWhere.CardList.Remove(card);
             toWhere.CardList.Add(card);
         }
         public void MoveCard(Card card, Region toWhere, int NumberDes)
         {
+            if (toWhere.Equals(this.Deck) || toWhere.Equals(this.Orb))
+            {
+                card.FrontShown = false;
+                card.Visible = false;
+            }
+            else
+            {
+                card.FrontShown = true;
+                card.Visible = true;
+            }
             Region fromWhere = card.BelongedRegion();
             fromWhere.CardList.Remove(card);
             toWhere.CardList.Insert(NumberDes, card);
