@@ -20,7 +20,7 @@ namespace FECipherVit
         }
 
         #region Initialization
-        public double Version = 1.1;
+        public double Version = 1.11;
         public int DatabaseVer = 20150828;
         public List<string[]> CardData;
         public User Player;

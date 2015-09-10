@@ -294,8 +294,11 @@ namespace FECipherVit
             }
             else
             {
-                fromWhere.CardList[Number].FrontShown = true;
-                fromWhere.CardList[Number].Visible = true;
+                if (!((toWhere.Equals(this.Kizuna) || toWhere.Equals(this.KizunaUsed)) && (fromWhere.Equals(this.Kizuna) || fromWhere.Equals(this.KizunaUsed))))
+                {
+                    fromWhere.CardList[Number].FrontShown = true;
+                    fromWhere.CardList[Number].Visible = true;
+                }
             }
             toWhere.CardList.Add(fromWhere.CardList[Number]);
             fromWhere.CardList.RemoveAt(Number);
@@ -309,8 +312,11 @@ namespace FECipherVit
             }
             else
             {
-                fromWhere.CardList[Number].FrontShown = true;
-                fromWhere.CardList[Number].Visible = true;
+                if (!((toWhere.Equals(this.Kizuna) || toWhere.Equals(this.KizunaUsed)) && (fromWhere.Equals(this.Kizuna) || fromWhere.Equals(this.KizunaUsed))))
+                {
+                    fromWhere.CardList[Number].FrontShown = true;
+                    fromWhere.CardList[Number].Visible = true;
+                }
             }
             toWhere.CardList.Insert(NumberDes, fromWhere.CardList[Number]);
             fromWhere.CardList.RemoveAt(Number);
@@ -324,8 +330,11 @@ namespace FECipherVit
             }
             else
             {
-                card.FrontShown = true;
-                card.Visible = true;
+                if (!((toWhere.Equals(this.Kizuna) || toWhere.Equals(this.KizunaUsed)) && (card.BelongedRegion().Equals(this.Kizuna) || card.BelongedRegion().Equals(this.KizunaUsed))))
+                {
+                    card.FrontShown = true;
+                    card.Visible = true;
+                }
             }
             Region fromWhere = card.BelongedRegion();
             fromWhere.CardList.Remove(card);
@@ -340,8 +349,11 @@ namespace FECipherVit
             }
             else
             {
-                card.FrontShown = true;
-                card.Visible = true;
+                if (!((toWhere.Equals(this.Kizuna) || toWhere.Equals(this.KizunaUsed)) && (card.BelongedRegion().Equals(this.Kizuna) || card.BelongedRegion().Equals(this.KizunaUsed))))
+                {
+                    card.FrontShown = true;
+                    card.Visible = true;
+                }
             }
             Region fromWhere = card.BelongedRegion();
             fromWhere.CardList.Remove(card);
